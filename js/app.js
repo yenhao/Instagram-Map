@@ -10,6 +10,24 @@ function getParameterByName(name, url) {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
+function nextImages(next_url){
+    Instagram.nextPages(next_url,function( response ) {
+        var $instagram = $( '#instagram' );
+        for ( var i = 0; i < response.data.length; i++ ) {
+            var basic_images = response.data[i];
+            imageUrl = basic_images.images.low_resolution.url;
+            imageLoc_lat = basic_images.location.latitude;
+            imageLoc_lon = basic_images.location.longitude;
+            $instagram.append( '<div><img src="' + imageUrl + '" /><p>'
+            + imageLoc_lat + ',' + imageLoc_lat +'</p></div>' );
+        }
+        if(response.pagination.length != 0){
+            next_url = response.pagination.next_url;
+            nextImages(next_url);
+        }
+    });
+}
+
 window.Instagram = {
     /**
      * Store application settings
@@ -30,7 +48,7 @@ window.Instagram = {
      * Get a list of popular media.
      */
     mymedia: function( callback ) {
-        var endpoint = this.BASE_URL + '/users/self/media/recent?access_token=' + this.config.access_token;
+        var endpoint = this.BASE_URL + '/users/self/media/recent?access_token=' + this.config.access_token + '&count=10';
         // alert(endpoint);
         this.getJSON( endpoint, callback );
     },
@@ -52,24 +70,38 @@ window.Instagram = {
                 if ( typeof callback === 'function' ) callback( response );
             }
         });
+    },
+
+    nextPages: function( next_url, callback ){
+        this.getJSON( next_url, callback );
     }
 };
 
 Instagram.init({
     client_id: 'dc0e44cb1714408aac0fb713fb888337',
     access_token: ''
-    // access_token: '533937403.dc0e44c.30370e6afc0f49da9b9bf425ee11d12f'
 });
 
 
 $( document ).ready(function() {
 
-    Instagram.mymedia(function( response ) {
-        var $instagram = $( '#instagram' );
-        for ( var i = 0; i < response.data.length; i++ ) {
-            imageUrl = response.data[i].images.low_resolution.url;
-            $instagram.append( '<img src="' + imageUrl + '" />' );
-        }
+      var $instagram = $( '#instagram' );
+      Instagram.mymedia(function( response ) {
+          for ( var i = 0; i < response.data.length; i++ ) {
+              var basic_images = response.data[i];
+              imageUrl = basic_images.images.low_resolution.url;
+              imageLoc_lat = basic_images.location.latitude;
+              imageLoc_lon = basic_images.location.longitude;
+              $instagram.append( '<div><img src="' + imageUrl + '" /><p>'
+              + imageLoc_lat + ',' + imageLoc_lat +'</p></div>' );
+          }
+        /**
+          To get all images
+        **/
+          if(response.pagination.length != 0){
+              next_url = response.pagination.next_url;
+              nextImages(next_url);
+          }
     });
     //
     // // $( '#form' ).on('submit', function( e ) {
