@@ -1,3 +1,8 @@
+/**
+    for Instagram
+**/
+var location_img_list = [];
+
 function getParameterByName(name, url) {
     if (!url) {
       url = window.location.href;
@@ -21,10 +26,12 @@ function getImageData(json_file){
 
             imageLoc_lat = basic_images.location.latitude;
             imageLoc_lon = basic_images.location.longitude;
-            $instagram.append( '<div><img src="' + imageUrl + '" /><p>'
-            + imageLoc_lat + ',' + imageLoc_lat +'</p></div>' );
+            $instagram.append( '<div class="row"><div class="col-md-6 "><img src="' + imageUrl + '" /><p>'
+            + imageLoc_lat + ',' + imageLoc_lat +'</p></div></div>' );
+            location_img_list.push([imageUrl,imageLoc_lat,imageLoc_lon]);
+            // alert(location_img_list);
         }else{
-            $instagram.append( '<div><img src="' + imageUrl + '" /></div>' );
+            $instagram.append( '<div class="row><div class="col-md-6"><img src="' + imageUrl + '" /></div></div>' );
         }
     }
 }
@@ -94,6 +101,19 @@ Instagram.init({
     access_token: ''
 });
 
+/**
+    For google map
+**/
+function myMap(callback) {
+  var mapCanvas = document.getElementById("map");
+  // var mapCanvas = $( '#map' ); //?????
+  var mapOptions = {
+    center: new google.maps.LatLng(23.79, 120.79),
+    zoom: 7
+  }
+  var map = new google.maps.Map(mapCanvas, mapOptions);
+
+}
 
 $( document ).ready(function() {
       Instagram.mymedia(function( response ) {
@@ -106,6 +126,8 @@ $( document ).ready(function() {
               nextImages(next_url);
           }
     });
+
+
     //
     // // $( '#form' ).on('submit', function( e ) {
     //     e.preventDefault();
