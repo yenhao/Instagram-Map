@@ -10,17 +10,29 @@ function getParameterByName(name, url) {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
-function nextImages(next_url){
-    Instagram.nextPages(next_url,function( response ) {
-        var $instagram = $( '#instagram' );
-        for ( var i = 0; i < response.data.length; i++ ) {
-            var basic_images = response.data[i];
-            imageUrl = basic_images.images.low_resolution.url;
+function getImageData(json_file){
+
+    var $instagram = $( '#instagram' );
+    for ( var i = 0; i < json_file.data.length; i++ ) {
+        var basic_images = json_file.data[i];
+        imageUrl = basic_images.images.low_resolution.url;
+        // alert(imageUrl);
+        if(basic_images.location != null){
+
             imageLoc_lat = basic_images.location.latitude;
             imageLoc_lon = basic_images.location.longitude;
             $instagram.append( '<div><img src="' + imageUrl + '" /><p>'
             + imageLoc_lat + ',' + imageLoc_lat +'</p></div>' );
+        }else{
+            $instagram.append( '<div><img src="' + imageUrl + '" /></div>' );
         }
+    }
+}
+
+function nextImages(next_url){
+    Instagram.nextPages(next_url,function( response ) {
+        getImageData(response);
+
         if(response.pagination.length != 0){
             next_url = response.pagination.next_url;
             nextImages(next_url);
@@ -84,17 +96,8 @@ Instagram.init({
 
 
 $( document ).ready(function() {
-
-      var $instagram = $( '#instagram' );
       Instagram.mymedia(function( response ) {
-          for ( var i = 0; i < response.data.length; i++ ) {
-              var basic_images = response.data[i];
-              imageUrl = basic_images.images.low_resolution.url;
-              imageLoc_lat = basic_images.location.latitude;
-              imageLoc_lon = basic_images.location.longitude;
-              $instagram.append( '<div><img src="' + imageUrl + '" /><p>'
-              + imageLoc_lat + ',' + imageLoc_lat +'</p></div>' );
-          }
+          getImageData(response);
         /**
           To get all images
         **/
