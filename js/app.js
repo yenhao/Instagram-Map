@@ -1,7 +1,7 @@
 /**
     for Instagram
 **/
-var location_img_list = [];
+var location_img_list = new Array();
 
 function getParameterByName(name, url) {
     if (!url) {
@@ -27,12 +27,16 @@ function getImageData(json_file){
             imageLoc_lat = basic_images.location.latitude;
             imageLoc_lon = basic_images.location.longitude;
             imageLoc_name = basic_images.location.name;
-            $instagram.append( '<div class="row"><div class="col-md-6 "><img src="' + imageUrl + '" /><p>'
-            + imageLoc_lat + ',' + imageLoc_lat +'</p></div></div>' );
-            location_img_list.push([imageUrl,imageLoc_lat,imageLoc_lon,imageLoc_name]);
+            imageText = basic_images.caption.text;
+            imageTime = parseInt(basic_images.created_time)*1000;
+            imageStUrl = basic_images.images.standard_resolution.url;
+            // $instagram.append( '<div class="row"><div class="col-md-6 "><img src="' + imageUrl + '" /><p>'
+            // + imageLoc_lat + ',' + imageLoc_lat +'</p></div></div>' );
+            location_img_list.push([imageUrl,imageLoc_lat,imageLoc_lon,imageLoc_name,imageText,imageTime,imageStUrl]);
             // alert(location_img_list);
         }else{
-            $instagram.append( '<div class="row><div class="col-md-6"><img src="' + imageUrl + '" /></div></div>' );
+            // $instagram.append( '<div class="row><div class="col-md-6"><img src="' + imageUrl + '" /></div></div>' );
+            continue
         }
     }
 }
@@ -105,18 +109,21 @@ Instagram.init({
 /**
     For google map
 **/
+var marker_list;
+var infowindow_list;
 function myMap(callback) {
-  var mapCanvas = document.getElementById("map");
-  // var mapCanvas = $( '#map' ); //?????
-  var mapOptions = {
+    var mapCanvas = document.getElementById("map");
+    // var mapCanvas = $( '#map' ); //?????
+    var mapOptions = {
     center: new google.maps.LatLng(23.79, 120.79),
     zoom: 7
-  }
-  var map = new google.maps.Map(mapCanvas, mapOptions);
-
+    }
+    var map = new google.maps.Map(mapCanvas, mapOptions);
 }
 
 function buildImgMap(){
+    marker_list = new Array();
+    infowindow_list = new Array();
     var mapCanvas = document.getElementById("map");
     var myCenter = new google.maps.LatLng(location_img_list[0][1],location_img_list[0][2]); 
     var mapOptions = {
@@ -124,16 +131,18 @@ function buildImgMap(){
         zoom: 7
     }
     var map = new google.maps.Map(mapCanvas,mapOptions);
-    // var marker = new google.maps.Marker({
-    //   position: myCenter,
-    //   icon: location_img_list[0][0]
-    // });
-    // marker.setMap(map);
     var arrayLength = location_img_list.length;
     for(var i = 0; i < arrayLength; i++){
         placeMarker(map,location_img_list[i]);
     }
-      
+    for(var i = 0; i < marker_list.length; i++){
+        marker_list[i].setMap(map);
+    }
+
+    // Add a marker clusterer to manage the markers.
+    var markerCluster = new MarkerClusterer(map, marker_list,{imagePath: 'img/cluster/'});
+
+    resizeIcon(map);
 }
 
 function placeMarker(map, img_info) {
@@ -146,19 +155,67 @@ function placeMarker(map, img_info) {
         // origin: new google.maps.Point(0, 0),
         // The anchor for this image is the base of the flagpole at (0, 32).
         // anchor: new google.maps.Point(0, 32)
-        scaledSize: new google.maps.Size(40, 40)
+        scaledSize: new google.maps.Size(42, 42) // set the size of icon
     };
     var marker = new google.maps.Marker({
     position: imgCenter,
     icon: image, 
     map: map
     });
-    var infowindow = new google.maps.InfoWindow({
-        content: img_info[3]
+    marker_list.push(marker);
+    var postdate = new Date(img_info[5]);
+    var infocontent = '<div>'+
+            '<h4>' + postdate.getFullYear() + '/' + postdate.getMonth() + '/' + postdate.getDate() + '<br/>' + img_info[3] + '</h4>'+
+            '<center><img class="img-rounded" src="' + img_info[0] + '" width="80%"/></center>'+
+            '<p style="margin-top:8px">' + img_info[4].replace("\n", "<br/>"); + '</p>'+
+        '</div>';
+
+    google.maps.event.addListener(marker,'click',function() {
+        var infowindow = new google.maps.InfoWindow({
+          content:infocontent,
+          maxWidth: 200
+        });
+        // To automaticly close other infowindow when click this marker!
+        if(infowindow_list.length !=0){
+            for(var j = 0; j < infowindow_list.length; j++){
+                infowindow_list[j].close();
+            }    
+        }
+        infowindow.open(map,marker);
+        infowindow_list.push(infowindow);
     });
-    infowindow.open(map,marker);
-    // marker.setMap(map);
 }
+
+function resizeIcon(map){
+    //when the map zoom changes, resize the icon based on the zoom level so the marker covers the same geographic area
+    map.addListener('zoom_changed', function() {
+        var pixelSizeAtZoom0 = 40; //the size of the icon at zoom level 0
+        var maxPixelSize = 130; //restricts the maximum size of the icon, otherwise the browser will choke at higher zoom levels trying to scale an image to millions of pixels
+
+        var zoom = map.getZoom();
+        // alert(zoom);
+        var relativePixelSize = Math.round(pixelSizeAtZoom0*Math.pow(1.1,zoom-7)); // use 2 to the power of current zoom to calculate relative pixel size.  Base of exponent is 2 because relative size should double every time you zoom in
+        // alert(relativePixelSize);
+        if(relativePixelSize > maxPixelSize) //restrict the maximum size of the icon
+            relativePixelSize = maxPixelSize;
+
+        //change the size of the icon
+        for(var i = 0; i < marker_list.length; i++){
+            var marker = marker_list[i]
+            marker.setIcon(
+                new google.maps.MarkerImage(
+                    marker.getIcon().url, //marker's same icon graphic
+                    null,//size
+                    null,//origin
+                    null, //anchor
+                    new google.maps.Size(relativePixelSize, relativePixelSize) //changes the scale
+                )
+            );  
+        }
+          
+    });
+}
+
 $( document ).ready(function() {
       Instagram.mymedia(function( response ) {
           getImageData(response);
