@@ -145,6 +145,7 @@ function buildImgMap(){
 
     // Add a marker clusterer to manage the markers.
       var markerCluster = new MarkerClusterer(map, marker_list,{imagePath: 'img/cluster/'});
+      // var markerCluster = new MarkerClusterer(map, marker_list);
 
     resizeIcon(map);
 }

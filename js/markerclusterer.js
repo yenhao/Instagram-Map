@@ -1002,8 +1002,14 @@ Cluster.prototype.updateIcon = function() {
 
   var numStyles = this.markerClusterer_.getStyles().length;
   var sums = this.markerClusterer_.getCalculator()(this.markers_, numStyles);
+
   this.clusterIcon_.setCenter(this.center_);
   this.clusterIcon_.setSums(sums);
+  this.clusterIcon_.url_ = this.markers_[0].icon.url;
+  // if(room)
+  var relativePixelSize = Math.round(45*Math.pow(1.1,zoom-7));
+  this.clusterIcon_.height_ = relativePixelSize;
+  this.clusterIcon_.width_ = relativePixelSize;
   this.clusterIcon_.show();
 };
 
@@ -1251,15 +1257,16 @@ ClusterIcon.prototype.createCss = function(pos) {
     }
   } else {
     style.push('height:' + this.height_ + 'px; line-height:' +
-        this.height_ + 'px; width:' + this.width_ + 'px; text-align:center;');
+        this.height_ + 'px; width:' + this.width_ + 'px; text-align:center;background-size:100%;');
   }
 
-  var txtColor = this.textColor_ ? this.textColor_ : 'black';
-  var txtSize = this.textSize_ ? this.textSize_ : 11;
+  var txtColor = this.textColor_ ? this.textColor_ : 'white';
+  var txtSize = this.textSize_ ? this.textSize_ : 15;
 
   style.push('cursor:pointer; top:' + pos.y + 'px; left:' +
       pos.x + 'px; color:' + txtColor + '; position:absolute; font-size:' +
-      txtSize + 'px; font-family:Arial,sans-serif; font-weight:bold');
+      txtSize + 'px; font-family:Arial,sans-serif; font-weight:bold;text-shadow:-1.5px -1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px 1.5px 0 #000;}');
+      // Eric 12/11
   return style.join('');
 };
 
