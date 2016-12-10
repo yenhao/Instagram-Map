@@ -125,7 +125,7 @@ function buildImgMap(){
     marker_list = new Array();
     infowindow_list = new Array();
     var mapCanvas = document.getElementById("map");
-    var myCenter = new google.maps.LatLng(location_img_list[0][1],location_img_list[0][2]); 
+    var myCenter = new google.maps.LatLng(location_img_list[0][1],location_img_list[0][2]);
     var mapOptions = {
         center: new google.maps.LatLng(23.79, 120.79),
         zoom: 7
@@ -140,13 +140,31 @@ function buildImgMap(){
     }
 
     // Add a marker clusterer to manage the markers.
-    var markerCluster = new MarkerClusterer(map, marker_list,{imagePath: 'img/cluster/'});
+      var markerCluster = new MarkerClusterer(map, marker_list,{imagePath: 'img/cluster/'});
 
     resizeIcon(map);
 }
 
 function placeMarker(map, img_info) {
-    var imgCenter = new google.maps.LatLng(img_info[1],img_info[2]);
+    var latlng = new google.maps.LatLng(img_info[1],img_info[2]);
+    //get array of markers currently in cluster
+    var allMarkers = marker_list;
+    //final position for marker, could be updated if another marker already exists in same position
+    var finalLatLng = latlng;
+    //check to see if any of the existing markers match the latlng of the new marker
+    if (allMarkers.length != 0) {
+        for (i=0; i < allMarkers.length; i++) {
+            var existingMarker = allMarkers[i];
+            var pos = existingMarker.getPosition();
+            //if a marker already exists in the same position as this marker
+            if (latlng.equals(pos)) {
+                //update the position of the coincident marker by applying a small multipler to its coordinates
+                var newLat = latlng.lat() + (Math.random() -.5) / 1500;// * (Math.random() * (max - min) + min);
+                var newLng = latlng.lng() + (Math.random() -.5) / 1500;// * (Math.random() * (max - min) + min);
+                finalLatLng = new google.maps.LatLng(newLat,newLng);
+            }
+        }
+    }
     var image = {
         url: img_info[0],
         // This marker is 20 pixels wide by 32 pixels high.
@@ -158,10 +176,11 @@ function placeMarker(map, img_info) {
         scaledSize: new google.maps.Size(42, 42) // set the size of icon
     };
     var marker = new google.maps.Marker({
-    position: imgCenter,
-    icon: image, 
+    position: finalLatLng,
+    icon: image,
     map: map
     });
+
     marker_list.push(marker);
     var postdate = new Date(img_info[5]);
     var infocontent = '<div>'+
@@ -179,7 +198,7 @@ function placeMarker(map, img_info) {
         if(infowindow_list.length !=0){
             for(var j = 0; j < infowindow_list.length; j++){
                 infowindow_list[j].close();
-            }    
+            }
         }
         infowindow.open(map,marker);
         infowindow_list.push(infowindow);
@@ -210,9 +229,9 @@ function resizeIcon(map){
                     null, //anchor
                     new google.maps.Size(relativePixelSize, relativePixelSize) //changes the scale
                 )
-            );  
+            );
         }
-          
+
     });
 }
 
