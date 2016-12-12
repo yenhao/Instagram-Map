@@ -27,7 +27,13 @@ function getImageData(json_file){
             imageLoc_lat = basic_images.location.latitude;
             imageLoc_lon = basic_images.location.longitude;
             imageLoc_name = basic_images.location.name;
-            imageText = basic_images.caption.text;
+            // If no text
+            if(basic_images.caption != null){
+                imageText = basic_images.caption.text;
+            }else{
+                imagesText = '';
+            }
+            
             imageTime = parseInt(basic_images.created_time)*1000;
             imageStUrl = basic_images.images.standard_resolution.url;
             // $instagram.append( '<div class="row"><div class="col-md-6 "><img src="' + imageUrl + '" /><p>'
