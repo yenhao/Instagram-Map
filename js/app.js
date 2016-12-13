@@ -73,8 +73,10 @@ window.Instagram = {
         // this.config.access_token = opt.access_token;
         this.config.access_token = getParameterByName('access_token');
         if(getParameterByName('access_token')== null){
-            alert("Please Authorize Our Application\n Or we can't continue..");
-            window.location.href="https://www.instagram.com/oauth/authorize/?client_id=dc0e44cb1714408aac0fb713fb888337&redirect_uri=https://idea.cs.nthu.edu.tw/~yenhao0218/insta_map/&response_type=token";
+            alert("Please login with Instagram!");
+            // window.location.href="https://www.instagram.com/oauth/authorize/?client_id=dc0e44cb1714408aac0fb713fb888337&redirect_uri=https://idea.cs.nthu.edu.tw/~yenhao0218/insta_map/&response_type=token";
+            window.location.href="https://www.instagram.com/oauth/authorize/?client_id=dc0e44cb1714408aac0fb713fb888337&redirect_uri=http://140.114.77.11/~yenhao0218/insta_map/&response_type=token";
+            
         }
     },
 
