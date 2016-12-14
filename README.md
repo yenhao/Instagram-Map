@@ -7,11 +7,11 @@ After login to Instagram, and click on **build your map**. It will show your med
 
 For example: 
 
-(img/sample/ex1.jpg)
+![alt text](img/sample/ex1.jpg)
 
 You can zoom in / zoom out:
 
-(img/sample/ex2.jpg)
+![alt text](img/sample/ex2.jpg)
 
 
 Also, you are able to click on the figure to show more detail content
