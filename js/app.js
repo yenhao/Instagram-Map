@@ -33,7 +33,7 @@ function getImageData(json_file){
             }else{
                 imagesText = '';
             }
-            
+
             imageTime = parseInt(basic_images.created_time)*1000;
             imageStUrl = basic_images.images.standard_resolution.url;
             // $instagram.append( '<div class="row"><div class="col-md-6 "><img src="' + imageUrl + '" /><p>'
@@ -55,6 +55,7 @@ function nextImages(next_url){
             next_url = response.pagination.next_url;
             nextImages(next_url);
         }
+        //add the finish loading function
     });
 }
 
@@ -74,9 +75,9 @@ window.Instagram = {
         this.config.access_token = getParameterByName('access_token');
         if(getParameterByName('access_token')== null){
             alert("Please login with Instagram!");
-            // window.location.href="https://www.instagram.com/oauth/authorize/?client_id=dc0e44cb1714408aac0fb713fb888337&redirect_uri=https://idea.cs.nthu.edu.tw/~yenhao0218/insta_map/&response_type=token";
-            window.location.href="https://www.instagram.com/oauth/authorize/?client_id=dc0e44cb1714408aac0fb713fb888337&redirect_uri=http://140.114.77.11/~yenhao0218/insta_map/&response_type=token";
-            
+            window.location.href="https://www.instagram.com/oauth/authorize/?client_id=dc0e44cb1714408aac0fb713fb888337&redirect_uri=https://idea.cs.nthu.edu.tw/~yenhao0218/insta_map/&response_type=token";
+            // window.location.href="https://www.instagram.com/oauth/authorize/?client_id=dc0e44cb1714408aac0fb713fb888337&redirect_uri=http://140.114.77.11/~yenhao0218/insta_map/&response_type=token";
+
         }
     },
 
@@ -84,7 +85,7 @@ window.Instagram = {
      * Get a list of popular media.
      */
     mymedia: function( callback ) {
-        var endpoint = this.BASE_URL + '/users/self/media/recent?access_token=' + this.config.access_token + '&count=10';
+        var endpoint = this.BASE_URL + '/users/self/media/recent?access_token=' + this.config.access_token + '&count=30';
         // alert(endpoint);
         this.getJSON( endpoint, callback );
     },
