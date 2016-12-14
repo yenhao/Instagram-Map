@@ -1,2 +1,11 @@
 html, body { height: 100%; margin: 0; padding: 0; }
-#map {height: 90%; }
+
+
+
+#map {
+  height: 90%;
+}
+
+#btn_create {
+  text-align: center;
+}

@@ -50,12 +50,22 @@ function getImageData(json_file){
 function nextImages(next_url){
     Instagram.nextPages(next_url,function( response ) {
         getImageData(response);
-
-        if(response.pagination.length != 0){
+        try{
+            if(response.pagination.next_url != undefined){
+            
             next_url = response.pagination.next_url;
             nextImages(next_url);
+            }else{
+                //add the finish loading function
+                document.getElementById('loader').innerHTML = "";
+                document.getElementById('loader').style.display = "none";
+                document.getElementById('loadinfo').style.display = "none";
+                document.getElementById('map').style.visibility = "visible";
+                document.getElementById('btn_create').style.visibility = "visible";
+            }
+        }catch(err){
+            console.log(err.message);
         }
-        //add the finish loading function
     });
 }
 
@@ -250,6 +260,8 @@ function resizeIcon(map){
 }
 
 $( document ).ready(function() {
+        document.getElementById('map').style.visibility = "hidden";
+        document.getElementById('btn_create').style.visibility = "hidden";
       Instagram.mymedia(function( response ) {
           getImageData(response);
         /**
