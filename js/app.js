@@ -31,7 +31,7 @@ function getImageData(json_file){
             if(basic_images.caption != null){
                 imageText = basic_images.caption.text;
             }else{
-                imagesText = '';
+                imageText = '';
             }
 
             imageTime = parseInt(basic_images.created_time)*1000;
