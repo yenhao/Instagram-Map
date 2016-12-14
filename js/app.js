@@ -84,7 +84,7 @@ window.Instagram = {
         // this.config.access_token = opt.access_token;
         this.config.access_token = getParameterByName('access_token');
         if(getParameterByName('access_token')== null){
-            alert("Please login with Instagram!");
+            // alert("Please login with Instagram!");
             window.location.href="https://www.instagram.com/oauth/authorize/?client_id=dc0e44cb1714408aac0fb713fb888337&redirect_uri=https://idea.cs.nthu.edu.tw/~yenhao0218/insta_map/&response_type=token";
             // window.location.href="https://www.instagram.com/oauth/authorize/?client_id=dc0e44cb1714408aac0fb713fb888337&redirect_uri=http://140.114.77.11/~yenhao0218/insta_map/&response_type=token";
 
@@ -216,7 +216,7 @@ function placeMarker(map, img_info) {
     google.maps.event.addListener(marker,'click',function() {
         var infowindow = new google.maps.InfoWindow({
           content:infocontent,
-          maxWidth: 200
+          maxWidth: 300
         });
         // To automaticly close other infowindow when click this marker!
         if(infowindow_list.length !=0){
@@ -267,10 +267,22 @@ $( document ).ready(function() {
         /**
           To get all images
         **/
-          if(response.pagination.length != 0){
-              next_url = response.pagination.next_url;
-              nextImages(next_url);
-          }
+        try{
+            if(response.pagination.next_url != undefined){
+            
+            next_url = response.pagination.next_url;
+            nextImages(next_url);
+            }else{
+                //add the finish loading function
+                document.getElementById('loader').innerHTML = "";
+                document.getElementById('loader').style.display = "none";
+                document.getElementById('loadinfo').style.display = "none";
+                document.getElementById('map').style.visibility = "visible";
+                document.getElementById('btn_create').style.visibility = "visible";
+            }
+        }catch(err){
+            console.log(err.message);
+        }          
     });
 
 
