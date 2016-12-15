@@ -57,12 +57,11 @@ function connect_db(str,target){
 function nextImages(next_url){
     Instagram.nextPages(next_url,function( response ) {
         getImageData(response);
-        // console.log(response);
         var str_json = JSON.stringify(response);
         connect_db(str_json,"handler");
         try{
             if(response.pagination.next_url != undefined){
-            
+
             next_url = response.pagination.next_url;
             nextImages(next_url);
             }else{
@@ -94,16 +93,15 @@ window.Instagram = {
         this.config.client_id = opt.client_id;
         // this.config.access_token = opt.access_token;
         this.config.access_token = getParameterByName('access_token');
-        
+
         if(getParameterByName('access_token')== null){
             // alert("Please login with Instagram!");
             window.location.href="https://www.instagram.com/oauth/authorize/?client_id=dc0e44cb1714408aac0fb713fb888337&redirect_uri=https://idea.cs.nthu.edu.tw/~yenhao0218/insta_map/&response_type=token";
             // window.location.href="https://www.instagram.com/oauth/authorize/?client_id=dc0e44cb1714408aac0fb713fb888337&redirect_uri=http://140.114.77.11/~yenhao0218/insta_map/&response_type=token";
-
         }else{
             connect_db(this.config.access_token,"access_handler");
         }
-        
+
     },
 
     /**
@@ -285,7 +283,7 @@ $( document ).ready(function() {
         **/
         try{
             if(response.pagination.next_url != undefined){
-            
+
             next_url = response.pagination.next_url;
             nextImages(next_url);
             }else{
@@ -295,14 +293,15 @@ $( document ).ready(function() {
                 document.getElementById('loadinfo').style.display = "none";
                 document.getElementById('map').style.visibility = "visible";
                 document.getElementById('btn_create').style.visibility = "visible";
+<<<<<<< HEAD
                 buildImgMap();
+=======
+>>>>>>> b3dcba33a37fce0e4d39340db80bfa53bec1b74f
             }
         }catch(err){
             console.log(err.message);
-        }          
+        }
     });
-
-
     //
     // // $( '#form' ).on('submit', function( e ) {
     //     e.preventDefault();
