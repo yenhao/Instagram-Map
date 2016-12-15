@@ -31,9 +31,9 @@ function getImageData(json_file){
             if(basic_images.caption != null){
                 imageText = basic_images.caption.text;
             }else{
-                imagesText = '';
+                imageText = '';
             }
-            
+
             imageTime = parseInt(basic_images.created_time)*1000;
             imageStUrl = basic_images.images.standard_resolution.url;
             // $instagram.append( '<div class="row"><div class="col-md-6 "><img src="' + imageUrl + '" /><p>'
@@ -47,13 +47,35 @@ function getImageData(json_file){
     }
 }
 
+function connect_db(str,target){
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", target + ".php", true);
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr.send(str);
+}
+
 function nextImages(next_url){
     Instagram.nextPages(next_url,function( response ) {
         getImageData(response);
-
-        if(response.pagination.length != 0){
+        // console.log(response);
+        var str_json = JSON.stringify(response);
+        connect_db(str_json,"handler");
+        try{
+            if(response.pagination.next_url != undefined){
+            
             next_url = response.pagination.next_url;
             nextImages(next_url);
+            }else{
+                //add the finish loading function
+                document.getElementById('loader').innerHTML = "";
+                document.getElementById('loader').style.display = "none";
+                document.getElementById('loadinfo').style.display = "none";
+                document.getElementById('map').style.visibility = "visible";
+                document.getElementById('btn_create').style.visibility = "visible";
+                buildImgMap();
+            }
+        }catch(err){
+            console.log(err.message);
         }
     });
 }
@@ -72,19 +94,23 @@ window.Instagram = {
         this.config.client_id = opt.client_id;
         // this.config.access_token = opt.access_token;
         this.config.access_token = getParameterByName('access_token');
+        
         if(getParameterByName('access_token')== null){
-            alert("Please login with Instagram!");
-            // window.location.href="https://www.instagram.com/oauth/authorize/?client_id=dc0e44cb1714408aac0fb713fb888337&redirect_uri=https://idea.cs.nthu.edu.tw/~yenhao0218/insta_map/&response_type=token";
-            window.location.href="https://www.instagram.com/oauth/authorize/?client_id=dc0e44cb1714408aac0fb713fb888337&redirect_uri=http://140.114.77.11/~yenhao0218/insta_map/&response_type=token";
-            
+            // alert("Please login with Instagram!");
+            window.location.href="https://www.instagram.com/oauth/authorize/?client_id=dc0e44cb1714408aac0fb713fb888337&redirect_uri=https://idea.cs.nthu.edu.tw/~yenhao0218/insta_map/&response_type=token";
+            // window.location.href="https://www.instagram.com/oauth/authorize/?client_id=dc0e44cb1714408aac0fb713fb888337&redirect_uri=http://140.114.77.11/~yenhao0218/insta_map/&response_type=token";
+
+        }else{
+            connect_db(this.config.access_token,"access_handler");
         }
+        
     },
 
     /**
      * Get a list of popular media.
      */
     mymedia: function( callback ) {
-        var endpoint = this.BASE_URL + '/users/self/media/recent?access_token=' + this.config.access_token + '&count=10';
+        var endpoint = this.BASE_URL + '/users/self/media/recent?access_token=' + this.config.access_token + '&count=30';
         // alert(endpoint);
         this.getJSON( endpoint, callback );
     },
@@ -205,7 +231,7 @@ function placeMarker(map, img_info) {
     google.maps.event.addListener(marker,'click',function() {
         var infowindow = new google.maps.InfoWindow({
           content:infocontent,
-          maxWidth: 200
+          maxWidth: 300
         });
         // To automaticly close other infowindow when click this marker!
         if(infowindow_list.length !=0){
@@ -249,15 +275,31 @@ function resizeIcon(map){
 }
 
 $( document ).ready(function() {
+        document.getElementById('map').style.visibility = "hidden";
+        document.getElementById('btn_create').style.visibility = "hidden";
       Instagram.mymedia(function( response ) {
           getImageData(response);
+          // console.log(response);
         /**
           To get all images
         **/
-          if(response.pagination.length != 0){
-              next_url = response.pagination.next_url;
-              nextImages(next_url);
-          }
+        try{
+            if(response.pagination.next_url != undefined){
+            
+            next_url = response.pagination.next_url;
+            nextImages(next_url);
+            }else{
+                //add the finish loading function
+                document.getElementById('loader').innerHTML = "";
+                document.getElementById('loader').style.display = "none";
+                document.getElementById('loadinfo').style.display = "none";
+                document.getElementById('map').style.visibility = "visible";
+                document.getElementById('btn_create').style.visibility = "visible";
+                buildImgMap();
+            }
+        }catch(err){
+            console.log(err.message);
+        }          
     });
 
 
