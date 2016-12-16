@@ -283,6 +283,7 @@ $( document ).ready(function() {
         // document.getElementById('screenshot').style.visibility = "hidden";
       Instagram.mymedia(function( response ) {
           getImageData(response);
+
           var str_json = JSON.stringify(response);
           connect_db(str_json,"handler");
           // console.log(response);
