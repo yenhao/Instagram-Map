@@ -5,8 +5,9 @@ This application used Instagram API and Google Maps API to build the Instagram M
 After login to Instagram, Instagram Map will try to load your media location. When finishing the loading procedure, Your Instagram Map will show up.
 
 There are two little further functions:
-1. You are able to click on the cluster to get detail location.
-2.Click on the single photo, it will show the detail of this post.
+
+ 1. You are able to click on the cluster to get detail location.
+ 2. Click on the single photo, it will show the detail of this post.
 
 For example: 
 
