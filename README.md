@@ -1,9 +1,12 @@
 # Instagram-Map
 
-This application used Instagram API and Google Maps API to build the Instagram Media Map.
-It allows people to login via Instagram and get the multiple check-in locations on the google map.
+This application used Instagram API and Google Maps API to build the Instagram Media Map. It allows people to log in via Instagram and loads the multiple check-in locations on the google map.
 
-After login to Instagram, and click on **build your map**. It will show your media map.
+After login to Instagram, Instagram Map will try to load your media location. When finishing the loading procedure, Your Instagram Map will show up.
+
+There are two little further functions:
+1. You are able to click on the cluster to get detail location.
+2.Click on the single photo, it will show the detail of this post.
 
 For example: 
 
