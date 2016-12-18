@@ -224,7 +224,7 @@ function placeMarker(map, img_info) {
     var postdate = new Date(img_info[5]);
     var infocontent = '<div>'+
             '<h4>' + postdate.getFullYear() + '/' + postdate.getMonth() + '/' + postdate.getDate() + '<br/>' + img_info[3] + '</h4>'+
-            '<center><img class="img-rounded" src="' + img_info[0] + '" width="80%"/></center>'+
+            '<center><img class="img-rounded" src="' + img_info[6] + '" width="90%"/></center>'+
             '<p style="margin-top:8px">' + img_info[4].replace("\n", "<br/>"); + '</p>'+
         '</div>';
 
