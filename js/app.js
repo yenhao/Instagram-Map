@@ -154,7 +154,7 @@ function myMap(callback) {
     // var mapCanvas = $( '#map' ); //?????
     var mapOptions = {
     center: new google.maps.LatLng(23.79, 120.79),
-    zoom: 7
+    zoom: 8
     }
     var map = new google.maps.Map(mapCanvas, mapOptions);
 }
@@ -166,7 +166,7 @@ function buildImgMap(){
     var myCenter = new google.maps.LatLng(location_img_list[0][1],location_img_list[0][2]);
     var mapOptions = {
         center: new google.maps.LatLng(23.79, 120.79),
-        zoom: 7
+        zoom: 8
     }
     var map = new google.maps.Map(mapCanvas,mapOptions);
     var arrayLength = location_img_list.length;
@@ -222,7 +222,7 @@ function placeMarker(map, img_info) {
 
     marker_list.push(marker);
     var postdate = new Date(img_info[5]);
-    var infocontent = '<div>'+
+    var infocontent = '<div class="iw-container">'+
             '<h4>' + postdate.getFullYear() + '/' + postdate.getMonth() + '/' + postdate.getDate() + '<br/>' + img_info[3] + '</h4>'+
             '<center><img class="img-rounded" src="' + img_info[6] + '" width="90%"/></center>'+
             '<p style="margin-top:8px">' + img_info[4].replace("\n", "<br/>"); + '</p>'+
@@ -231,7 +231,7 @@ function placeMarker(map, img_info) {
     google.maps.event.addListener(marker,'click',function() {
         var infowindow = new google.maps.InfoWindow({
           content:infocontent,
-          maxWidth: 300
+          maxWidth: 350
         });
         // To automaticly close other infowindow when click this marker!
         if(infowindow_list.length !=0){
@@ -239,7 +239,7 @@ function placeMarker(map, img_info) {
                 infowindow_list[j].close();
             }
         }
-        infowindow.open(map,marker);
+        infowindow.open(map,this);
         infowindow_list.push(infowindow);
     });
 }
