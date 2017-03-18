@@ -20,4 +20,4 @@ You can zoom in / zoom out:
 
 Also, you are able to click on the figure to show more detail content.
 
-Here is the [demo] (https://idea.cs.nthu.edu.tw/~yenhao0218/insta_map)
+[Let's go to Demo!!](https://idea.cs.nthu.edu.tw/~yenhao0218/insta_map)
